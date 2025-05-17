@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>管理休假</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+	<link th:href="@{/css/bootstrap.min.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/css/style.css}" rel='stylesheet' type='text/css' />
+	<link rel="stylesheet" th:href="@{/css/morris.css}" type="text/css"/>
+	<link th:href="@{/css/font-awesome.css}" rel="stylesheet">
+	<script th:src="@{/js/jquery-2.2.0.min.js}"></script>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/table-style.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/basictable.css}" />
+	<script type="text/javascript" th:src="@{/js/jquery.basictable.min.js}"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+			$('#table-two-axis').basictable();
+
+		});
+	</script>
+	<link href='//fonts.googleapis.com/css?family=Roboto:700,500,300,100italic,100,400' rel='stylesheet' type='text/css'/>
+	<link href='//fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" th:href="@{/css/icon-font.min.css}" type='text/css' />
+	<link rel="shortcut icon" th:href="@{/img/favicon.png}">
+</head>
+<body>
+<div class="page-container">
+	<div class="left-content">
+		<div class="mother-grid-inner">
+			<div class="header-main">
+				<div class="" style="float:left;">
+					<h2><a th:href="@{/user/home}" >休假管理系统</a></h2>
+				</div>
+				<div class="profile_details w3l" style="float:right;">
+					<ul>
+						<li class="dropdown profile_details_drop">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+								<div class="profile_img">
+									<span class="prfil-img"><img th:src="@{/img/profile.jpg}" alt=""> </span>
+									<div class="user-name">
+										<p sec:authentication="name"></p>
+										<span sec:authentication="principal.authorities"></span>
+									</div>
+									<i class="fa fa-angle-down"></i>
+									<i class="fa fa-angle-up"></i>
+									<div class="clearfix"></div>
+								</div>
+							</a>
+							<ul class="dropdown-menu drp-mnu">
+								<li> <a href="#"><i class="fa fa-user"></i> 个人资料</a> </li>
+								<li> <a th:href="@{/logout}"><i class="fa fa-sign-out"></i> 登出</a> </li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+
+				<div class="clearfix"> </div>
+			</div>
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a th:href="@{/user/home}">首页</a> <i class="fa fa-angle-right"></i> 管理休假</li>
+			</ol>
+			<div class="agile-grids">
+				<div class="alert alert-info" th:if="${(param.successMessage != null)}">
+					<span th:text="${param.successMessage[0]}"></span>
+				</div>
+				<div class="agile-tables">
+
+					<h3>管理休假</h3>
+					<table id="table-two-axis" class="two-axis">
+						<thead>
+						<tr>
+							<th>姓名</th>
+							<th>开始日期</th>
+							<th>结束日期</th>
+							<th>天数</th>
+							<th>休假类型</th>
+							<th>事由</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr th:each="leaveInfo,iterStat : ${leavesList}">
+							<td th:text="${leaveInfo.employeeName}"></td>
+							<td th:utext="${#dates.format(leaveInfo.fromDate,'dd MMM yy')}"></td>
+							<td th:utext="${#dates.format(leaveInfo.toDate,'dd MMM yy')}"></td>
+							<td th:text="${leaveInfo.duration}"></td>
+							<td th:text="${leaveInfo.leaveType}"></td>
+							<td th:text="${leaveInfo.reason}"></td>
+							<td>
+								<a th:href="@{/user/manage-leaves/accept/{id}(id=${leaveInfo.id})}" ><span class="label-success" style="color:  white;">批准</span></a>
+								<a th:href="@{/user/manage-leaves/reject/{id}(id=${leaveInfo.id})}" ><span class="label-danger" style="color:  white;">拒绝</span></a>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+			<script>
+				$(document).ready(function() {
+					var navoffeset=$(".header-main").offset().top;
+					$(window).scroll(function(){
+						var scrollpos=$(window).scrollTop();
+						if(scrollpos >=navoffeset){
+							$(".header-main").addClass("fixed");
+						}else{
+							$(".header-main").removeClass("fixed");
+						}
+					});
+
+				});
+			</script>
+			<div class="inner-block">
+
+			</div>
+			<div class="copyrights">
+				<p>&copy; 2025 本科毕设 </p>
+			</div>
+		</div>
+	</div>
+	<div class="sidebar-menu">
+		<header class="logo1">
+			<a href="#" class="sidebar-icon"> <span class="fa fa-bars"></span> </a>
+		</header>
+		<div style="border-top:1px ridge rgba(255, 255, 255, 0.15)"></div>
+		<div class="menu">
+			<ul id="menu" >
+				<li><a th:href="@{/user/home}"><i class="fa fa-home"></i> <span>首页</span><div class="clearfix"></div></a></li>
+
+				<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/user/manage-users}"><i class="fa fa-users"></i> <span>管理用户</span><div class="clearfix"></div></a></li>
+
+				<li sec:authorize="hasAuthority('MANAGER')"><a th:href="@{/user/manage-leaves}"><i class="fa fa-calendar-check-o"></i> <span>管理休假</span><div class="clearfix"></div></a></li>
+
+				<li><a th:href="@{/user/apply-leave}"><i class="fa fa-calendar-plus-o"></i> <span>申请休假</span><div class="clearfix"></div></a></li>
+
+				<li><a th:href="@{/user/my-leaves}"><i class="fa fa-calendar-check-o"></i> <span>我的休假</span><div class="clearfix"></div></a></li>
+
+				<li><a th:href="@{/user/change-password}"><i class="fa fa-key"></i> <span>修改密码</span><div class="clearfix"></div></a></li>
+
+			</ul>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+</div>
+<script>
+	var toggle = true;
+
+	$(".sidebar-icon").click(function() {
+		if (toggle)
+		{
+			$(".page-container").addClass("sidebar-collapsed").removeClass("sidebar-collapsed-back");
+			$("#menu span").css({"position":"absolute"});
+		}
+		else
+		{
+			$(".page-container").removeClass("sidebar-collapsed").addClass("sidebar-collapsed-back");
+			setTimeout(function() {
+				$("#menu span").css({"position":"relative"});
+			}, 400);
+		}
+
+		toggle = !toggle;
+	});
+</script>
+<script th:src="@{/js/jquery.nicescroll.js}"></script>
+<script th:src="@{/js/scripts.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>
